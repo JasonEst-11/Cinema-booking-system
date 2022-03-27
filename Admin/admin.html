@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Admin</title>
+    </head>
+    <body>
+        <div class="Change_Seats">
+            <h1>Change seats</h1>
+            <label for="category">Room:</label>
+            <select name="category" id="category" onchange="getseats(this.value)">
+            <option value="R1">R1</option>
+            <option value="R2">R2</option>
+            <option value="R3">R3</option>
+            </select>
+            <div id="seats">
+            <script>
+                function getseats(str) {
+                    var xhttp;  
+                    if (str == "") {                        
+                        document.getElementById("seats").innerHTML = "";
+                        return;
+                    }
+                    xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            document.getElementById("seats").innerHTML = this.responseText;
+                        }
+                    };
+                    xhttp.open("GET", "seats.php?q="+str, true);
+                    xhttp.send();
+                }
+            </script>
+            </div> 
+        </div>
+        <div>
+            <table>
+                <tr>
+                    <td bgcolor='gray' style='font-size: 20px'>Unblocked</td><td bgcolor='red' style='font-size: 20px'>Blocked</td>
+                </tr>
+            </table>
+            <form method="POST" action="admin.php">
+                <table>
+                    <tr>
+                        <td>Row:</td><td><input type="text" name="row"></td><td>Number:</td><td><input type="number" name="number"></td><td>Room:</td><td><input type="text" name="Room"></td>
+                    </tr>  
+                    <tr>
+                        <td><button type="submit" name="block">Block</button></td><td><button type="submit" name="unblock">Unblock</button></td>
+                    </tr>
+            </table>
+            </form>
+            <h1>Book Ticket</h1>
+            <form method="POST" action="admin.php">
+                <table>
+                    <tr>
+                        <td>Email:</td><td><input type="text" name="email"></td><td>Screening:</td><td><input type="number" name="sc"></td>
+                    </tr>
+                    <tr>
+                        <td>Seat Row:</td><td><input type="text" name="row"></td><td>Seat Number:</td><td><input type="number" name="num"></td>
+                    </tr>
+                    <tr>
+                        <td><button type="submit" name="book">Submit</button></td>
+                    </tr>
+                </table>
+            </form>    
+        </div>
+        <div>
+            <h1>View Tickets</h1>
+            <form method="GET" action="admin.php">
+                <table>
+                    <tr>
+                        <td>Date</td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="datetime" placeholder="YYYY-MM-DD"></td>
+                    </tr>
+                    <tr>
+                        <td>Seat</td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="row" placeholder="Row"></td><td><input type="text" name="num" placeholder="number"></td>
+                    </tr>
+                    <tr>
+                        <td><button type="Submit" name="vt">View By Seat or Date</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="open_time">
+            <h1>Open Time</h1>
+            Open Time 5:00pm<button type="button">Change</button>
+            Close Time 1:00am<button type="button">Change</button>
+        </div>
+</html>
