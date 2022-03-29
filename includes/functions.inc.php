@@ -154,7 +154,25 @@ function screening($conn){
 
 //Seats
 function showseats($conn){
-$sql = "select seat_id,seat_row,seat_number,availability from seat where room_id = '".$_GET['r']."'";
+    //
+    $usertaken = array();
+    $othertaken = array();
+    $sql = "SELECT user_email,seat_id FROM ticket t 
+    join screening sc 
+    on t.seat_id = sc.sc_id
+    where t.sc_id = ".$_SESSION['sc'];
+    $result = $conn->query($sql);
+    if($result->num_rows > 0){
+        while($row = $result->fetch_assoc()){
+            if($row['user_email'] == $_SESSION['email']){
+                array_push($usertaken,$row['seat_id']);
+            }else{
+                array_push($othertaken,$row['seat_id']);
+            }
+        }
+    }
+
+    $sql = "select seat_id,seat_row,seat_number,availability from seat where room_id = '".$_GET['r']."'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
         for($i=0;$i<5;$i++) {
@@ -170,12 +188,14 @@ $sql = "select seat_id,seat_row,seat_number,availability from seat where room_id
                     echo "<td>";
                 }
 
-                if($row["availability"]=='T'){
-                    //Red = seat is Taken
+                if(in_array($row["seat_id"],$othertaken)){
+                    //Red = seat is taken by other users
                     echo "<i class='material-icons' style='font-size:48px;color:red'>event_seat</i>".$row["seat_row"].$row["seat_number"]."</td>";
-                }else if($row["availability"]=='E'){
+                }else if(in_array($row["seat_id"],$usertaken)){
+                    //Green = seat is taken by current user
+                    echo "<i class='material-icons' style='font-size:48px;color:green'>event_seat</i>".$row["seat_row"].$row["seat_number"]."</td>";
+                }else{
                     //Gray = seat is empty
-                    //Every selected seat will be stored in the array 'check_list'
                     echo "<i class='material-icons' style='font-size:48px;color:gray'>event_seat</i>".$row["seat_row"].$row["seat_number"]."<input type='checkbox'  name='check_list[] 'value='".$row['seat_id']."'></td>";
                 }
                 $j++;

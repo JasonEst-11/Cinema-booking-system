@@ -1,7 +1,8 @@
 <?php 
 include_once '../components/mainheader.php';
 include_once '../includes/functions.inc.php';
-session_start();?>
+session_start();
+$_SESSION['sc'] = $_GET['id'];?>
 <!--Booking form for seats-->
 
 <div class="container text-center">
